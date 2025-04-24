@@ -1,0 +1,15 @@
+__pycache__/
+
+venv/
+test.json
+train.json
+test_updated.json
+vector-payload.json
+train_update_label.json
+train_part_1.json
+train_part_2.json
+train_part_3.json
+train_part_4.json
+
+apps/static/temporary/
+apps/.env
