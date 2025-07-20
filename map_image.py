@@ -7,7 +7,7 @@ import random
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
 
-def process_json_files(folder_path, train_file, test_file, failed_file, max_workers=4):
+def process_json_files(folder_path, train_file, test_file, failed_file, max_workers=100):
     """
     Xử lý tất cả các file JSON trong thư mục, trích xuất thumbnail_url, chuyển sang base64,
     chia thành tập train (70%) và test (30%), và lưu kết quả vào các file JSON riêng.
@@ -190,4 +190,4 @@ if __name__ == "__main__":
     failed_file = "fail_map.json"
 
     # Bắt đầu xử lý với số luồng tải song song
-    process_json_files(input_folder, train_file, test_file, failed_file, max_workers=4)
+    process_json_files(input_folder, train_file, test_file, failed_file, max_workers=100)

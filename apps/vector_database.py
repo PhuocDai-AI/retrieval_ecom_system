@@ -8,7 +8,6 @@ from qdrant_client import QdrantClient
 from qdrant_client.http.models import PointStruct, Distance, Filter, FieldCondition, MatchValue
 from transformers import AlignProcessor, AlignModel, AutoProcessor, AutoModelForZeroShotImageClassification, AutoTokenizer, RobertaConfig, AlignConfig, AlignTextConfig, AutoModel
 import logging
-from huggingface_hub import login
 
 class VectorDB:
     def __init__(self, api='http://aienthusiasm:6333', timeout=200.0, device="cuda:0" if torch.cuda.is_available() else "cpu", api_key= None):
@@ -35,8 +34,8 @@ class VectorDB:
             raise
         tokenizer = AutoTokenizer.from_pretrained("vinai/phobert-base")
 
-        self.processor_align = AutoProcessor.from_pretrained("kakaobrain/align-base", tokenizer=tokenizer)
-        self.model_align = AutoModelForZeroShotImageClassification.from_pretrained("./finetuned_align_v1").to(self.device)
+        self.processor_align = AutoProcessor.from_pretrained("/home/phuocdai/retrieval_ecom_system/finetuned_align_v1", tokenizer=tokenizer)
+        self.model_align = AutoModelForZeroShotImageClassification.from_pretrained("/home/phuocdai/retrieval_ecom_system/finetuned_align_v1").to(self.device)
 
     def text_encode(self, text):
         """Mã hóa văn bản thành vector."""
@@ -102,3 +101,12 @@ class VectorDB:
                 logging.info(f"Đã tạo ảnh placeholder tại {output_path}")
             except Exception as e:
                 logging.error(f"Không thể tạo ảnh placeholder: {e}")
+
+    def image_encode(self, image: Image.Image):
+        """Mã hóa ảnh thành vector."""
+        processed = self.processor_align(images=image, return_tensors="pt").to(self.device)
+        with torch.no_grad():
+            image_features = self.model_align.get_image_features(
+                pixel_values=processed['pixel_values']
+            ).cpu().numpy().flatten()
+        return image_features.tolist()

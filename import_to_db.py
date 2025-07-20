@@ -6,7 +6,7 @@ from typing import List
 from dotenv import load_dotenv
 import os
 
-load_dotenv(dotenv_path="./apps/.env")
+load_dotenv(dotenv_path=".env")
 QDRANT_API_KEY = os.getenv('QDRANT_API_KEY')
 if not QDRANT_API_KEY:
     print("QDRANT_API_KEY not provided, using default value.")

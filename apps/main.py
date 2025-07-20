@@ -4,6 +4,7 @@ import os
 import shutil
 from dotenv import load_dotenv
 import logging
+from PIL import Image
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
@@ -135,6 +136,35 @@ def search_images(query_text=None):
     }
     logger.debug(f"Sending response with {len(image_paths)} images")
     return jsonify(response_data)
+
+@app.route('/search_image', methods=['POST'])
+def search_image():
+    if 'image' not in request.files:
+        return jsonify({'error': 'No image file provided'}), 400
+    file = request.files['image']
+    if file.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+    try:
+        image = Image.open(file.stream).convert('RGB')
+        vector = qdrant_manager.image_encode(image)
+        qdrant_results = qdrant_manager.client.search(
+            collection_name="e_com",
+            query_vector=vector,
+            limit=30
+        )
+        if not qdrant_results:
+            return jsonify({'error': 'No products found. Try a different image.'}), 404
+        products = process_qdrant_results(qdrant_results)
+        metadata_list = [product['metadata'] for product in products.values()]
+        image_paths = [product['metadata']['image_path'] for product in products.values()]
+        response_data = {
+            'image_paths': image_paths,
+            'metadata_list': metadata_list,
+        }
+        return jsonify(response_data)
+    except Exception as e:
+        logger.error(f"Error processing image search: {str(e)}")
+        return jsonify({'error': 'Failed to process image.'}), 500
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)

@@ -9,9 +9,10 @@
 </head>
 <body>
     <!-- Form tìm kiếm -->
-    <form id="search-form" class="search-container">
+    <form id="search-form" class="search-container" enctype="multipart/form-data">
         <div class="search-row">
             <textarea id="text-query" name="query" class="query-input" placeholder="Search for products..." rows="1"></textarea>
+            <input type="file" id="image-upload" name="image" accept="image/*" style="margin-left:10px;">
             <button type="submit" class="search-button">Search</button>
         </div>
     </form>

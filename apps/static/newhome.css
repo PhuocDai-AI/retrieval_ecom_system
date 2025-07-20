@@ -279,3 +279,13 @@
         padding: 10px;
     }
 }
+
+#image-upload {
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    padding: 8px 10px;
+    background: #fff;
+    font-size: 15px;
+    margin-left: 10px;
+    min-width: 180px;
+}

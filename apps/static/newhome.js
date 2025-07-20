@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const elements = {
         searchForm: document.getElementById('search-form'),
         queryInput: document.getElementById('text-query'),
+        imageInput: document.getElementById('image-upload'),
     };
 
     let allFrames = [];
@@ -15,11 +16,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function handleSearch(event) {
         event.preventDefault();
-        console.log("Search form submitted");
-        if (elements.queryInput.value.trim() !== '') {
+        const hasImage = elements.imageInput && elements.imageInput.files && elements.imageInput.files.length > 0;
+        const hasText = elements.queryInput.value.trim() !== '';
+        if (hasImage) {
+            performImageSearch();
+        } else if (hasText) {
             performSearch();
         } else {
-            displayError('Please enter a query.');
+            displayError('Please enter a query or upload an image.');
         }
     }
 
@@ -52,6 +56,28 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then(data => {
             console.log("Received data:", data);
+            displaySearchResults(data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            displayError('An error occurred while processing your request. Please try again.');
+        });
+    }
+
+    function performImageSearch() {
+        const formData = new FormData(elements.searchForm);
+        const file = elements.imageInput.files[0];
+        if (!file) {
+            displayError('Please select an image.');
+            return;
+        }
+        formData.append('image', file);
+        fetch('/search_image', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
             displaySearchResults(data);
         })
         .catch(error => {

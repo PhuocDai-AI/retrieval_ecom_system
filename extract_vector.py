@@ -13,9 +13,9 @@ print(f"Using device: {device}")
 
 
 # load model
-processor = AutoProcessor.from_pretrained("./finetuned_align_v1")
-model = AutoModel.from_pretrained("./finetuned_align_v1")
-
+processor = AutoProcessor.from_pretrained("/home/phuocdai/retrieval_ecom_system/finetuned_align_v1")
+model = AutoModel.from_pretrained("/home/phuocdai/retrieval_ecom_system/finetuned_align_v1")
+print("1.Model loaded successfully.")
 model.to(device)
 
 
@@ -26,7 +26,7 @@ transform = transforms.Compose([
 ])
 
 # load data
-file_path = "test.json"
+file_path = "processed_data.json"
 with open(file_path, 'r') as file:
     data = json.load(file)
 

@@ -13,3 +13,14 @@ train_part_4.json
 
 apps/static/temporary/
 apps/.env
+data/images/
+archive/
+checkpoints/
+checkpoints_test/
+checkpoints1/
+dataset-asset-laptop/
+dataset-asset-phone/
+failed_parts/
+products_laptop/
+products_phone/
+processed_parts/
